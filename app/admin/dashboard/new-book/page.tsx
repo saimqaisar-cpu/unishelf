@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "../../../lib/prisma";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 // Server action to handle form submission
 async function handleAddBook(formData: FormData) {
@@ -39,6 +40,9 @@ async function handleAddBook(formData: FormData) {
       role: role || "TEXTBOOK",
     },
   });
+
+  // Revalidate the home page cache so the new book appears instantly
+  revalidatePath("/");
 
   redirect("/admin/dashboard");
 }

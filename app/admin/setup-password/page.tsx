@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { setupAdminPassword } from "@/app/actions/admin-invites";
 
-export default function SetupPasswordPage() {
+function SetupPasswordForm() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
   const router = useRouter();
@@ -107,5 +107,13 @@ export default function SetupPasswordPage() {
         )}
       </main>
     </div>
+  );
+}
+
+export default function SetupPasswordPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-sm font-bold">Loading...</div>}>
+      <SetupPasswordForm />
+    </Suspense>
   );
 }

@@ -3,6 +3,8 @@ import HeroSection from "./components/HeroSection";
 import { prisma } from "@/app/lib/prisma";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const departments = await prisma.department.findMany({
     include: {
@@ -85,7 +87,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ABOUT SECTION (Linked with Header's About button for smooth scrolling) */}
+      {/* ABOUT SECTION */}
       <section id="about-section" className="py-20 bg-[#FAF8F5] border-t border-black/10 scroll-mt-16">
         <div className="max-w-5xl mx-auto px-6 space-y-10">
           
@@ -134,7 +136,6 @@ export default async function HomePage() {
       <footer className="bg-[#10213F] text-white pt-16 pb-12 border-t border-white/10 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-4 gap-10 relative z-10">
           
-          {/* Column 1 */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <div className="text-white">
@@ -152,7 +153,6 @@ export default async function HomePage() {
             </p>
           </div>
 
-          {/* Column 2 */}
           <div className="space-y-3">
             <h4 className="text-sm font-bold uppercase tracking-wider text-white">Explore</h4>
             <ul className="space-y-2 text-xs text-white/70">
@@ -162,7 +162,6 @@ export default async function HomePage() {
             </ul>
           </div>
 
-          {/* Column 3 */}
           <div className="space-y-3">
             <h4 className="text-sm font-bold uppercase tracking-wider text-white">Help</h4>
             <ul className="space-y-2 text-xs text-white/70">
@@ -172,7 +171,6 @@ export default async function HomePage() {
             </ul>
           </div>
 
-          {/* Column 4 */}
           <div className="space-y-3 text-xs text-white/70">
             <p>© 2026 UniShelf. All rights reserved.</p>
             <p className="italic text-white/50 text-[11px] leading-relaxed">

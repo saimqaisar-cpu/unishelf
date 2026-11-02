@@ -59,9 +59,9 @@ export async function createBookRecord(formData: FormData) {
     return { success: false, error: "Missing required fields." };
   }
 
-  let pdfStorageUrl = null;
-  let externalUrl = null;
-  let coverImageUrl = null;
+  let pdfStorageUrl: string | null = null;
+  let externalUrl: string | null = null;
+  let coverImageUrl: string | null = null;
 
   const pdfFile = formData.get("pdfFile") as File;
   const coverFile = formData.get("coverFile") as File;

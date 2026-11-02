@@ -23,7 +23,8 @@ export default function ChangePasswordForm({ adminEmail }: { adminEmail: string 
     formData.append("newPassword", newPassword);
     formData.append("confirmNewPassword", confirmNewPassword);
 
-    const res = await changeAdminPassword(adminEmail, formData);
+    // Fixed argument call to match expected single argument or handled properly
+    const res = await changeAdminPassword(formData);
     if (res.success) {
       setMessage(res.message || "Password changed successfully! Please log in again.");
       setCurrentPassword("");

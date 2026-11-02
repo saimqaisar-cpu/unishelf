@@ -107,7 +107,7 @@ export default async function AdminsManagementPage({
               </div>
             ) : (
               <div className="space-y-4">
-                {admins.map((admin) => (
+                {admins.map((admin: any) => (
                   <div key={admin.id} className="border border-black/10 rounded-2xl p-6 bg-white shadow-xs flex items-center justify-between gap-4">
                     <div className="space-y-1">
                       <div className="flex items-center space-x-2">

@@ -19,7 +19,7 @@ async function handleAddBook(formData: FormData) {
     return;
   }
 
-  // Create the book
+  // Create the book (using pdfStorageUrl matching the Prisma schema)
   const newBook = await prisma.book.create({
     data: {
       title,
@@ -27,16 +27,16 @@ async function handleAddBook(formData: FormData) {
       publisher: publisher || null,
       edition: edition || null,
       isbn: isbn || null,
-      fileUrl: fileUrl || null,
+      pdfStorageUrl: fileUrl || null,
     },
   });
 
-  // Map the book to the selected course
-  await prisma.courseBook.create({
+  // Map the book to the selected course (using courseBookMapping matching the Prisma schema)
+  await prisma.courseBookMapping.create({
     data: {
       courseId,
       bookId: newBook.id,
-      role: (role as any) || "TEXTBOOK",
+      role: role || "TEXTBOOK",
     },
   });
 

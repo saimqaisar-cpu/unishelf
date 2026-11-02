@@ -30,7 +30,7 @@ export async function getSemestersByProgram(programId: string) {
     include: { semesters: { orderBy: { number: "asc" } } },
   });
   
-  const semesters = schemes.flatMap((scheme) => scheme.semesters);
+  const semesters = schemes.flatMap((scheme: any) => scheme.semesters);
   return semesters;
 }
 

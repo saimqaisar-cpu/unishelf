@@ -1,8 +1,8 @@
 import Link from "next/link";
 
-export default function HierarchySection() {
+export default function HierarchySection({ children }: { children?: React.ReactNode }) {
   return (
-    <div className="pt-6 border-t border-black/10">
+    <div className="space-y-6 pt-6 border-t border-black/10">
       <Link 
         href="/admin/dashboard/books/catalog"
         className="group flex items-center justify-between bg-white border border-black/15 hover:border-[#7A1C1C] p-5 rounded-2xl shadow-xs transition-all duration-300 cursor-pointer"
@@ -21,6 +21,9 @@ export default function HierarchySection() {
           </span>
         </div>
       </Link>
+
+      {/* Render children passed inside HierarchySection */}
+      {children}
     </div>
   );
 }

@@ -100,7 +100,7 @@ export default async function BooksManagementPage({
         {/* Cascading Upload Form Component */}
         <BookUploadForm 
           departments={departments} 
-          action={async (formData) => {
+          action={async (formData: FormData) => {
             "use server";
             const res = await createBook(formData);
             if (!res.success) {
@@ -118,8 +118,8 @@ export default async function BooksManagementPage({
             </div>
           ) : (
             <div className="space-y-6">
-              {departments.map((dept) => {
-                const deptPrograms = programs.filter((p) => p.departmentId === dept.id);
+              {departments.map((dept: any) => {
+                const deptPrograms = programs.filter((p: any) => p.departmentId === dept.id);
 
                 return (
                   <div key={dept.id} className="border border-black/10 rounded-2xl p-6 bg-white shadow-xs space-y-4">
@@ -137,8 +137,8 @@ export default async function BooksManagementPage({
                       <p className="text-xs text-black/40 italic py-2">No programs in this department.</p>
                     ) : (
                       <div className="space-y-4 pl-2 sm:pl-4 border-l-2 border-black/5">
-                        {deptPrograms.map((prog) => {
-                          const semesters = prog.schemes.flatMap(s => s.semesters);
+                        {deptPrograms.map((prog: any) => {
+                          const semesters = prog.schemes.flatMap((s: any) => s.semesters);
 
                           return (
                             <div key={prog.id} className="bg-black/[0.01] border border-black/10 rounded-xl p-4 space-y-3">
@@ -148,7 +148,7 @@ export default async function BooksManagementPage({
                                 <p className="text-xs text-black/40 italic">No semesters added.</p>
                               ) : (
                                 <div className="space-y-3 pl-2 border-l border-black/10">
-                                  {semesters.map((sem) => (
+                                  {semesters.map((sem: any) => (
                                     <div key={sem.id} className="space-y-2">
                                       <span className="text-[11px] font-bold uppercase tracking-wider text-[#7A1C1C]">{sem.name}</span>
                                       
@@ -156,7 +156,7 @@ export default async function BooksManagementPage({
                                         <p className="text-[11px] text-black/40 italic">No courses mapped.</p>
                                       ) : (
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                          {sem.courses.map((course) => (
+                                          {sem.courses.map((course: any) => (
                                             <div key={course.id} className="bg-white border border-black/10 rounded-xl p-3.5 space-y-2">
                                               <div className="flex items-center justify-between">
                                                 <span className="text-xs font-bold">{course.name} <span className="font-mono text-[10px] text-black/50">({course.code})</span></span>
@@ -166,7 +166,7 @@ export default async function BooksManagementPage({
                                                 {!course.courseBooks || course.courseBooks.length === 0 ? (
                                                   <p className="text-[11px] text-black/40 italic">No prescribed books assigned.</p>
                                                 ) : (
-                                                  course.courseBooks.map((cb) => (
+                                                  course.courseBooks.map((cb: any) => (
                                                     <div key={cb.id} className="flex items-center justify-between bg-black/[0.02] px-3 py-2 rounded-lg text-xs">
                                                       <div>
                                                         <span className="font-bold">{cb.book.title}</span>

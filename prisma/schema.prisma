@@ -1,0 +1,169 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// 1. Administrator Accounts
+model Administrator {
+  id           String       @id @default(uuid())
+  email        String       @unique
+  passwordHash String?      // Optional jab tak invite accept na ho
+  name         String
+  isActive     Boolean      @default(false) // Invite accept hone ke baad true hoga
+  isInvited    Boolean      @default(true)
+  inviteToken  String?      @unique
+  tokenExpiry  DateTime?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  auditLogs    AuditLog[]
+}
+
+// 2. University Entity
+model University {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  code        String       @unique
+  slug        String       @unique
+  departments Department[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+// 3. Department Entity
+model Department {
+  id           String     @id @default(uuid())
+  universityId String
+  university   University @relation(fields: [universityId], references: [id], onDelete: Cascade)
+  name         String
+  code         String
+  slug         String     @unique
+  isPublished  Boolean    @default(false)
+  programs     Program[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@unique([universityId, code])
+}
+
+// 4. Program Entity
+model Program {
+  id           String             @id @default(uuid())
+  departmentId String
+  department   Department         @relation(fields: [departmentId], references: [id], onDelete: Cascade)
+  name         String
+  code         String
+  slug         String             @unique
+  isPublished  Boolean            @default(false)
+  schemes      CurriculumScheme[]
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+}
+
+// 5. Curriculum Scheme
+model CurriculumScheme {
+  id          String     @id @default(uuid())
+  programId   String
+  program     Program    @relation(fields: [programId], references: [id], onDelete: Cascade)
+  name        String
+  isDefault   Boolean    @default(false)
+  isPublished Boolean    @default(false)
+  semesters   Semester[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+// 6. Semester Entity
+model Semester {
+  id          String           @id @default(uuid())
+  schemeId    String
+  scheme      CurriculumScheme @relation(fields: [schemeId], references: [id], onDelete: Cascade)
+  number      Int
+  name        String
+  slug        String
+  isPublished Boolean          @default(false)
+  courses     Course[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@unique([schemeId, number])
+}
+
+// 7. Course Entity
+model Course {
+  id          String              @id @default(uuid())
+  semesterId  String
+  semester    Semester            @relation(fields: [semesterId], references: [id], onDelete: Cascade)
+  code        String
+  name        String
+  creditHours Int?
+  isPublished Boolean             @default(true)
+  courseBooks CourseBookMapping[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+}
+
+// 8. Enhanced Reusable Book Entity (Supports both PDF upload & External Link)
+model Book {
+  id                 String              @id @default(uuid())
+  title              String
+  authors            String?
+  edition            String?
+  isbn               String?
+  publisher          String?
+  coverImageUrl      String?             // Book cover image reference
+  bookType           String              @default("PDF") // "PDF" or "EXTERNAL"
+  pdfStorageUrl      String?             // Local/Cloud PDF storage URL
+  externalUrl        String?             // Direct external book link
+  
+  // Verification & Rights Statuses
+  verificationStatus String              @default("PENDING") // PENDING, VERIFIED, REJECTED
+  rightsStatus       String              @default("PENDING") // PUBLIC_DOMAIN, OPEN_LICENSE, PERMISSION_GRANTED, EXTERNAL_ONLY, RESTRICTED
+  publicationStatus  String              @default("DRAFT")   // DRAFT, PUBLISHED, ARCHIVED
+  
+  verifiedAt         DateTime?
+  courseMappings     CourseBookMapping[]
+  reports            IssueReport[]
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+}
+
+// 9. Course-Book Mapping
+model CourseBookMapping {
+  id        String   @id @default(uuid())
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  bookId    String
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  role      String   @default("TEXTBOOK") // TEXTBOOK or REFERENCE
+  createdAt DateTime @default(now())
+
+  @@unique([courseId, bookId])
+}
+
+// 10. Issue Reports
+model IssueReport {
+  id          String   @id @default(uuid())
+  bookId      String?
+  book        Book?    @relation(fields: [bookId], references: [id], onDelete: SetNull)
+  issueType   String   
+  description String?
+  status      String   @default("PENDING") 
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// 11. Audit Logs
+model AuditLog {
+  id          String        @id @default(uuid())
+  adminId     String
+  admin       Administrator @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  action      String        
+  targetModel String        
+  targetId    String?
+  details     String?       
+  createdAt   DateTime      @default(now())
+}

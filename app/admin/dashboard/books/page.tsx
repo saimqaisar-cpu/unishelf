@@ -172,7 +172,15 @@ export default async function BooksManagementPage({
                                                         <span className="font-bold">{cb.book.title}</span>
                                                         <span className="text-black/50 text-[10px] ml-1.5 font-mono">({cb.role})</span>
                                                       </div>
-                                                      <DeleteBookButton bookId={cb.book.id} bookTitle={cb.book.title} onDelete={deleteBook} />
+                                                      <div className="flex items-center space-x-2">
+                                                        <Link
+                                                          href={`/admin/dashboard/books/edit/${cb.book.id}`}
+                                                          className="text-black/70 hover:text-black font-bold bg-black/5 hover:bg-black/10 px-2.5 py-1 rounded-lg border border-black/10 transition text-[11px]"
+                                                        >
+                                                          Edit
+                                                        </Link>
+                                                        <DeleteBookButton bookId={cb.book.id} bookTitle={cb.book.title} onDelete={deleteBook} />
+                                                      </div>
                                                     </div>
                                                   ))
                                                 )}

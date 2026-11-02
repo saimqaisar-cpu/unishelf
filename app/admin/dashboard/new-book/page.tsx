@@ -7,12 +7,12 @@ import { revalidatePath } from "next/cache";
 async function handleAddBook(formData: FormData) {
   "use server";
 
-  const title = formData.get("title") as string;
-  const authors = formData.get("authors") as string;
-  const publisher = formData.get("publisher") as string;
-  const edition = formData.get("edition") as string;
-  const isbn = formData.get("isbn") as string;
-  const fileUrl = formData.get("fileUrl") as string;
+  const title = (formData.get("title") as string)?.trim();
+  const authors = (formData.get("authors") as string)?.trim();
+  const publisher = (formData.get("publisher") as string)?.trim() || null;
+  const edition = (formData.get("edition") as string)?.trim() || null;
+  const isbn = (formData.get("isbn") as string)?.trim() || null;
+  const fileUrl = (formData.get("fileUrl") as string)?.trim() || null;
   const courseId = formData.get("courseId") as string;
   const role = formData.get("role") as string;
 
@@ -20,26 +20,32 @@ async function handleAddBook(formData: FormData) {
     return;
   }
 
-  // Create the book (using pdfStorageUrl matching the Prisma schema)
-  const newBook = await prisma.book.create({
-    data: {
-      title,
-      authors,
-      publisher: publisher || null,
-      edition: edition || null,
-      isbn: isbn || null,
-      pdfStorageUrl: fileUrl || null,
-    },
-  });
+  try {
+    // Use transaction to ensure both book creation and mapping succeed together
+    await prisma.$transaction(async (tx) => {
+      const newBook = await tx.book.create({
+        data: {
+          title,
+          authors,
+          publisher,
+          edition,
+          isbn,
+          pdfStorageUrl: fileUrl,
+        },
+      });
 
-  // Map the book to the selected course (using courseBookMapping matching the Prisma schema)
-  await prisma.courseBookMapping.create({
-    data: {
-      courseId,
-      bookId: newBook.id,
-      role: role || "TEXTBOOK",
-    },
-  });
+      await tx.courseBookMapping.create({
+        data: {
+          courseId,
+          bookId: newBook.id,
+          role: role || "TEXTBOOK",
+        },
+      });
+    });
+  } catch (error) {
+    console.error("Failed to add book transaction:", error);
+    return;
+  }
 
   // Revalidate the home page cache so the new book appears instantly
   revalidatePath("/");

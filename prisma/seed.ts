@@ -106,9 +106,9 @@ async function main() {
           publisher: "McGraw-Hill",
           verificationStatus: "VERIFIED",
           rightsStatus: "EXTERNAL_ONLY",
-          accessType: "EXTERNAL_LINK",
+          bookType: "EXTERNAL",
           externalUrl: "https://example.com/peter-norton-intro-to-computers",
-          sourceReference: "GCUF Official Syllabus 2024",
+          publicationStatus: "PUBLISHED",
         },
       });
 
@@ -116,6 +116,7 @@ async function main() {
         data: {
           courseId: course1.id,
           bookId: book1.id,
+          role: "TEXTBOOK",
         },
       });
     }
@@ -139,9 +140,9 @@ async function main() {
           publisher: "Pearson",
           verificationStatus: "VERIFIED",
           rightsStatus: "EXTERNAL_ONLY",
-          accessType: "EXTERNAL_LINK",
+          bookType: "EXTERNAL",
           externalUrl: "https://example.com/deitel-java-how-to-program",
-          sourceReference: "GCUF Official Syllabus 2024",
+          publicationStatus: "PUBLISHED",
         },
       });
 
@@ -149,6 +150,7 @@ async function main() {
         data: {
           courseId: course2.id,
           bookId: book2.id,
+          role: "TEXTBOOK",
         },
       });
     }
